@@ -1,8 +1,8 @@
 import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 
-import { isNumericString } from "../helpers/regex";
-import { ZodValidation } from "../middleware/validate";
+import { isNumericString } from "helpers/regex";
+import { ZodValidation } from "middleware/validate";
 
 export const createSchema: ZodValidation = z.object({
   body: z.object({

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ZodValidation } from "../middleware/validate";
+import { ZodValidation } from "middleware/validate";
 
 export const loginSchema: ZodValidation = z.object({
   body: z.object({

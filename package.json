@@ -26,7 +26,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.0.3",
     "zod": "^3.22.4"
+  },
+  "_moduleAliases": {
+    "middleware": "./src/middleware",
+    "routes": "./src/routes",
+    "helpers": "./src/helpers"
   }
 }

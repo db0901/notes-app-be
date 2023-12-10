@@ -1,10 +1,12 @@
+import "module-alias/register";
+
 import express, { Request, Response } from "express";
 
 import cors from "cors";
 import dotenv from "dotenv";
 
-import { connectDB } from "./helpers/db";
-import routes from "./routes";
+import { connectDB } from "helpers/db";
+import routes from "routes";
 
 dotenv.config();
 

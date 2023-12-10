@@ -5,7 +5,7 @@ import { login, register } from "./controllers";
 import { loginSchema, registerSchema } from "./validation";
 
 // middlewares
-import { validate } from "../middleware/validate";
+import { validate } from "middleware/validate";
 
 const router = express.Router();
 

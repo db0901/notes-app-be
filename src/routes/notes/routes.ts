@@ -5,7 +5,7 @@ import { create, findAll, findOne, remove, update } from "./controllers";
 import { createSchema, findAllSchema, findOneSchema } from "./validation";
 
 // middlewares
-import { validate } from "../middleware/validate";
+import { validate } from "middleware/validate";
 
 const router = express.Router();
 
