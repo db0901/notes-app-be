@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class Security {
   private static saltRounds = 10;
+
+  private static jwtSecret = process.env.JWT_SECRET || "secret";
 
   static async hashPassword(password: string): Promise<string | null> {
     try {
@@ -24,6 +27,20 @@ class Security {
       return match;
     } catch (_) {
       return false;
+    }
+  }
+
+  static generateToken(userId: string): string {
+    return jwt.sign({ userId }, Security.jwtSecret, {
+      expiresIn: "24h",
+    });
+  }
+
+  static verifyToken(token: string): jwt.JwtPayload | string | null {
+    try {
+      return jwt.verify(token, this.jwtSecret);
+    } catch (error) {
+      return null;
     }
   }
 }

@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
 import { User } from "../auth/schemas/user";
 import { Note } from "./schemas/note";
 
@@ -6,12 +8,16 @@ export const create = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const userId = req.headers["user-id"] as string;
+  const userToken = req.userToken;
+  const token = jwt.decode(userToken) as JwtPayload;
+  const userId = token.userId!;
+
   const body: {
     title: string;
     content: string;
   } = req.body;
 
+  // couldn't find a way to type this. So brute force was needed
   const user = await User.findById(userId);
 
   if (!user)

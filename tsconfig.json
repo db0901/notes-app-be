@@ -12,7 +12,8 @@
       "middleware/*": ["middleware/*"],
       "routes/*": ["routes/*"],
       "helpers/*": ["helpers/*"]
-    }
+    },
+    "typeRoots": ["./types"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

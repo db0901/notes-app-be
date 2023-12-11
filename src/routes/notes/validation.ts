@@ -14,16 +14,9 @@ export const createSchema: ZodValidation = z.object({
     content: z.string().optional(),
   }),
   headers: z.object({
-    "user-id": z
-      .string({
-        required_error: "User ID is required",
-      })
-      .refine(
-        (value) => {
-          return isValidObjectId(value);
-        },
-        { message: "Invalid ID" }
-      ),
+    authorization: z.string({
+      required_error: "Auth token is required",
+    }),
   }),
 });
 

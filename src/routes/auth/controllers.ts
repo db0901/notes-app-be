@@ -23,10 +23,13 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 
+  const token = Security.generateToken(user._id.toString());
+
   return res.json({
     id: user._id,
     username: user.username,
     email: user.email,
+    authToken: token,
   });
 };
 
@@ -58,9 +61,12 @@ export const register = async (req: Request, res: Response) => {
   });
   await newUser.save();
 
+  const token = Security.generateToken(newUser._id.toString());
+
   return res.json({
     id: newUser._id,
     username: newUser.username,
     email: newUser.email,
+    authToken: token,
   });
 };
