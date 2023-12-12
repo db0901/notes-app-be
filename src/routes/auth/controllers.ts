@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import Security from "helpers/security";
-import { User } from "./schemas/user";
+import { User } from "schemas/user";
 
 export const login = async (req: Request, res: Response) => {
   const body: { email: string; password: string } = req.body;

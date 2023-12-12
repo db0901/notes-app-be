@@ -43,5 +43,17 @@ class Security {
       return null;
     }
   }
+
+  static filterBody<T extends Record<string, any>>(
+    body: T,
+    whitelist: string[]
+  ): Partial<T> {
+    return whitelist.reduce((filtered, key) => {
+      if (key in body) {
+        filtered[key as keyof T] = body[key as keyof T];
+      }
+      return filtered;
+    }, {} as Partial<T>);
+  }
 }
 export default Security;

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 import Security from "helpers/security";
 
@@ -12,14 +13,15 @@ export const authenticateJWT = (
     // authorization: Bearer <token>
     const token = authHeader.split(" ")[1];
 
-    const jwtResponse = Security.verifyToken(token);
+    const jwtResponse = Security.verifyToken(token) as JwtPayload;
 
     if (!jwtResponse)
       return res.status(403).json({
         message: "Invalid token",
       });
 
-    req.userToken = token;
+    // couldn't find a way to type this. So brute force was needed
+    req.userId = jwtResponse.userId!;
     next();
   } else {
     return res.status(401).json({

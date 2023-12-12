@@ -1,23 +1,20 @@
 import { Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { User } from "../auth/schemas/user";
-import { Note } from "./schemas/note";
+import Security from "helpers/security";
+import { Note } from "schemas/note";
+import { User } from "schemas/user";
 
 export const create = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const userToken = req.userToken;
-  const token = jwt.decode(userToken) as JwtPayload;
-  const userId = token.userId!;
+  const userId = req.userId;
 
   const body: {
     title: string;
     content: string;
   } = req.body;
 
-  // couldn't find a way to type this. So brute force was needed
   const user = await User.findById(userId);
 
   if (!user)
@@ -33,14 +30,12 @@ export const create = async (
   await newNote.save();
 
   return res.json({
-    userId,
-    note: {
-      noteId: newNote._id,
-      title: newNote.title,
-      content: newNote.content,
-      createdAt: newNote.createdAt,
-      updatedAt: newNote.updatedAt,
-    },
+    userId: newNote.userId,
+    noteId: newNote._id,
+    title: newNote.title,
+    content: newNote.content,
+    createdAt: newNote.createdAt,
+    updatedAt: newNote.updatedAt,
   });
 };
 
@@ -48,8 +43,9 @@ export const findAll = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const body: { userId: string } = req.body;
-  const user = await User.findById(body.userId);
+  const userId = req.userId;
+
+  const user = await User.findById(userId);
 
   if (!user)
     return res.status(403).json({
@@ -59,6 +55,11 @@ export const findAll = async (
   const notes = await Note.find({
     userId: user._id,
   });
+
+  if (!notes || notes.length === 0)
+    return res.json({
+      notes: [],
+    });
 
   return res.json({
     notes: notes.map((note) => ({
@@ -71,38 +72,91 @@ export const findAll = async (
   });
 };
 
-export const findOne = (
+export const findOne = async (
   req: Request<{ id: string }>,
   res: Response
-): Response => {
+): Promise<Response> => {
+  const userId = req.userId;
   const params = req.params;
+
+  const note = await Note.findById(params.id);
+
+  if (!note)
+    return res.json({
+      message: "Note not found",
+    });
+
+  const noteUserId = note.userId.toString();
+
+  if (noteUserId !== userId)
+    return res.status(403).json({
+      message: "Forbidden",
+    });
+
   return res.json({
-    message: "Get One Note /:id",
-    method: "GET",
-    id: params.id,
+    noteId: note._id,
+    title: note.title,
+    content: note.content,
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
   });
 };
 
-export const update = (
+export const update = async (
   req: Request<{ id: string }>,
   res: Response
-): Response => {
+): Promise<Response> => {
+  const userId = req.userId;
   const params = req.params;
+
+  const note = await Note.findById(params.id);
+
+  if (!note)
+    return res.json({
+      message: "Note not found",
+    });
+
+  const noteUserId = note.userId.toString();
+
+  if (noteUserId !== userId)
+    return res.status(403).json({
+      message: "Forbidden",
+    });
+
+  const updateFieldsWhitelist = ["title", "content"];
+  const updates = Security.filterBody(req.body, updateFieldsWhitelist);
+
+  await note.updateOne(updates);
+
   return res.json({
-    message: "Update Note /:id",
-    method: "PATCH",
-    id: params.id,
+    updated: true,
   });
 };
 
-export const remove = (
+export const remove = async (
   req: Request<{ id: string }>,
   res: Response
-): Response => {
+): Promise<Response> => {
+  const userId = req.userId;
   const params = req.params;
+
+  const note = await Note.findById(params.id);
+
+  if (!note)
+    return res.json({
+      message: "Note not found",
+    });
+
+  const noteUserId = note.userId.toString();
+
+  if (noteUserId !== userId)
+    return res.status(403).json({
+      message: "Forbidden",
+    });
+
+  await note.deleteOne();
+
   return res.json({
-    message: "Delete Note /:id",
-    method: "DELETE",
-    id: params.id,
+    deleted: true,
   });
 };

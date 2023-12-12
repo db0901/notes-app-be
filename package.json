@@ -31,8 +31,9 @@
     "zod": "^3.22.4"
   },
   "_moduleAliases": {
+    "helpers": "./src/helpers",
     "middleware": "./src/middleware",
     "routes": "./src/routes",
-    "helpers": "./src/helpers"
+    "schemas": "./src/schemas"
   }
 }
