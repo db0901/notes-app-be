@@ -22,9 +22,14 @@ app.all("*", (req: Request, res: Response) => {
   });
 });
 
-connectDB();
-
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
-});
+try {
+  connectDB().then(() => {
+    console.log("Database connected");
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => {
+      console.log(`Server started at http://localhost:${port}`);
+    });
+  });
+} catch (err) {
+  console.log(err);
+}
