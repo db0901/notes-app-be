@@ -1,16 +1,19 @@
 import "module-alias/register";
 
 import express, { Request, Response } from "express";
+import { Server } from "http";
 
 import cors from "cors";
 import dotenv from "dotenv";
 
 import { connectDB } from "helpers/db";
-import routes from "routes";
+import routes from "./routes";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
+export let server: Server;
+
 app.use(cors());
 app.use(express.json());
 
@@ -26,7 +29,7 @@ try {
   connectDB().then(() => {
     console.log("Database connected");
     const port = process.env.PORT || 4000;
-    app.listen(port, () => {
+    server = app.listen(port, () => {
       console.log(`Server started at http://localhost:${port}`);
     });
   });
