@@ -1,6 +1,6 @@
 import express from "express";
-// routes
 
+// routes
 import authRoutes from "routes/auth/routes";
 import notesRoutes from "routes/notes/routes";
 

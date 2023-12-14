@@ -27,3 +27,11 @@ export const registerSchema: ZodValidation = z.object({
       .email({ message: "Must be a valid email" }),
   }),
 });
+
+export const currentSessionSchema: ZodValidation = z.object({
+  headers: z.object({
+    authorization: z.string({
+      required_error: "Auth token is required",
+    }),
+  }),
+});
