@@ -18,7 +18,7 @@ export const authenticateJWT = (
     const jwtResponse = Security.verifyToken(token) as JwtPayload;
 
     if (!jwtResponse)
-      return res.status(StatusCode.Forbidden).json({
+      return res.status(StatusCode.Unauthorized).json({
         message: "Invalid token",
       });
 

@@ -10,7 +10,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   const user = await User.findOne({ email: body.email });
 
   if (!user)
-    return res.status(StatusCode.Forbidden).json({
+    return res.status(StatusCode.Unauthorized).json({
       message: "No user with that email",
     });
 

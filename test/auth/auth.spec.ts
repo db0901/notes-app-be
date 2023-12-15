@@ -37,14 +37,14 @@ describe("Login", () => {
       .expect(401);
   });
 
-  it("if user email is wrong should return 403 Forbidden", async () => {
+  it("if user email is wrong should return 401 Unathorized", async () => {
     await request(app)
       .post("/auth/login")
       .send({
         email: "test@test-wrong.com",
         password: "test_password",
       })
-      .expect(403);
+      .expect(401);
   });
 });
 

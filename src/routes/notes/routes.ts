@@ -23,5 +23,3 @@ router.patch("/:id", [validate(updateSchema), authenticateJWT], update);
 router.delete("/:id", [validate(removeSchema), authenticateJWT], remove);
 
 export default router;
-
-// TODO: TESTING
