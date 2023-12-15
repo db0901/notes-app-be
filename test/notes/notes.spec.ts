@@ -72,6 +72,7 @@ describe("Get Notes", () => {
 
     expect(res.status).toBe(404);
   });
+  // TODO: Add tests for pagination
 });
 
 describe("Update Note", () => {

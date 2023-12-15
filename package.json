@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "build": "tsc",
-    "serve": "node dist/index.js",
+    "serve": "node dist/src/index.js",
     "test": "jest --watch --detectOpenHandles"
   },
   "author": "Daniel Bedoya",
@@ -39,9 +39,9 @@
     "zod": "^3.22.4"
   },
   "_moduleAliases": {
-    "helpers": "./src/helpers",
-    "middleware": "./src/middleware",
-    "routes": "./src/routes",
-    "schemas": "./src/schemas"
+    "helpers": "dist/src/helpers",
+    "middleware": "dist/src/middleware",
+    "routes": "dist/src/routes",
+    "schemas": "dist/src/schemas"
   }
 }
