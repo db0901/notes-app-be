@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import Security from "helpers/security";
+import { StatusCode } from "helpers/statusCode";
 import { Note } from "schemas/note";
 import { User } from "schemas/user";
 
@@ -18,7 +19,7 @@ export const create = async (
   const user = await User.findById(userId);
 
   if (!user)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Does not exist a user with that ID",
     });
 
@@ -29,7 +30,7 @@ export const create = async (
   });
   await newNote.save();
 
-  return res.json({
+  return res.status(StatusCode.Created).json({
     userId: newNote.userId,
     noteId: newNote._id,
     title: newNote.title,
@@ -48,7 +49,7 @@ export const findAll = async (
   const user = await User.findById(userId);
 
   if (!user)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Does not exist a user with that ID",
     });
 
@@ -57,11 +58,11 @@ export const findAll = async (
   });
 
   if (!notes || notes.length === 0)
-    return res.json({
+    return res.status(StatusCode.OK).json({
       notes: [],
     });
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     notes: notes.map((note) => ({
       noteId: note._id,
       title: note.title,
@@ -82,18 +83,18 @@ export const findOne = async (
   const note = await Note.findById(params.id);
 
   if (!note)
-    return res.json({
+    return res.status(StatusCode.NotFound).json({
       message: "Note not found",
     });
 
   const noteUserId = note.userId.toString();
 
   if (noteUserId !== userId)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Forbidden",
     });
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     noteId: note._id,
     title: note.title,
     content: note.content,
@@ -112,14 +113,14 @@ export const update = async (
   const note = await Note.findById(params.id);
 
   if (!note)
-    return res.json({
+    return res.status(StatusCode.NotFound).json({
       message: "Note not found",
     });
 
   const noteUserId = note.userId.toString();
 
   if (noteUserId !== userId)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Forbidden",
     });
 
@@ -128,7 +129,7 @@ export const update = async (
 
   await note.updateOne(updates);
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     updated: true,
   });
 };
@@ -143,20 +144,20 @@ export const remove = async (
   const note = await Note.findById(params.id);
 
   if (!note)
-    return res.json({
+    return res.status(StatusCode.NotFound).json({
       message: "Note not found",
     });
 
   const noteUserId = note.userId.toString();
 
   if (noteUserId !== userId)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Forbidden",
     });
 
   await note.deleteOne();
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     deleted: true,
   });
 };

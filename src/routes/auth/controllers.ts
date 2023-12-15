@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import Security from "helpers/security";
+import { StatusCode } from "helpers/statusCode";
 import { User } from "schemas/user";
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
@@ -9,7 +10,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   const user = await User.findOne({ email: body.email });
 
   if (!user)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "No user with that email",
     });
 
@@ -19,14 +20,14 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   );
 
   if (!isMatch) {
-    return res.status(401).json({
+    return res.status(StatusCode.Unauthorized).json({
       message: "Invalid credentials",
     });
   }
 
   const token = Security.generateToken(user._id.toString());
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     id: user._id,
     authToken: token,
     username: user.username,
@@ -46,14 +47,14 @@ export const register = async (
   const user = await User.findOne({ email: body.email });
 
   if (user)
-    return res.status(409).json({
+    return res.status(StatusCode.Conflict).json({
       message: "User with that email already exists",
     });
 
   const passwordHash = await Security.hashPassword(body.password);
 
   if (!passwordHash)
-    return res.status(500).json({
+    return res.status(StatusCode.InternalServerError).json({
       message: "Password error, contact system admin",
     });
 
@@ -66,7 +67,7 @@ export const register = async (
 
   const token = Security.generateToken(newUser._id.toString());
 
-  return res.json({
+  return res.status(StatusCode.Created).json({
     id: newUser._id,
     authToken: token,
     username: newUser.username,
@@ -83,7 +84,7 @@ export const currentSession = async (
   const user = await User.findById(userId);
 
   if (!user)
-    return res.status(403).json({
+    return res.status(StatusCode.Forbidden).json({
       message: "Does not exist a user with that ID",
     });
 
@@ -93,16 +94,16 @@ export const currentSession = async (
   const issuedAt = decodedToken.iat ? new Date(decodedToken.iat * 1000) : null;
 
   if (!expiresAt)
-    return res.status(500).json({
+    return res.status(StatusCode.InternalServerError).json({
       message: "Token error - Error decoding exp",
     });
 
   if (!issuedAt)
-    return res.status(500).json({
+    return res.status(StatusCode.InternalServerError).json({
       message: "Token error - Error decoding iat",
     });
 
-  return res.json({
+  return res.status(StatusCode.OK).json({
     email: user.email,
     expiresAt: expiresAt.toISOString(),
     issuedAt: issuedAt.toISOString(),
