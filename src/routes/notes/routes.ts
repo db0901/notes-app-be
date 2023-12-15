@@ -24,4 +24,4 @@ router.delete("/:id", [validate(removeSchema), authenticateJWT], remove);
 
 export default router;
 
-// WHEN FINISHED DO TESTING INSTANTLY - IN PROGRESS
+// TODO: TESTING

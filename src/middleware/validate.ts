@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
+import { StatusCode } from "helpers/statusCode";
+
 export type ZodValidation = z.ZodObject<{
   body?: z.AnyZodObject;
   headers?: z.AnyZodObject;
@@ -19,7 +21,9 @@ export const validate =
     });
 
     if (!data.success) {
-      return res.status(400).json(data.error.flatten().fieldErrors);
+      return res
+        .status(StatusCode.BadRequest)
+        .json(data.error.flatten().fieldErrors);
     }
     return next();
   };

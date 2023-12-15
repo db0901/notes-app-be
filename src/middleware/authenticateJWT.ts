@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
 import Security from "helpers/security";
+import { StatusCode } from "helpers/statusCode";
 
 export const authenticateJWT = (
   req: Request,
@@ -17,19 +18,19 @@ export const authenticateJWT = (
     const jwtResponse = Security.verifyToken(token) as JwtPayload;
 
     if (!jwtResponse)
-      return res.status(403).json({
+      return res.status(StatusCode.Forbidden).json({
         message: "Invalid token",
       });
 
     const expiresAt = jwtResponse.exp ? new Date(jwtResponse.exp * 1000) : null;
 
     if (!expiresAt)
-      return res.status(500).json({
+      return res.status(StatusCode.InternalServerError).json({
         message: "Token error - Error decoding exp",
       });
 
     if (isBefore(expiresAt, new Date()))
-      return res.status(403).json({
+      return res.status(StatusCode.Forbidden).json({
         message: "Token expired",
       });
 
@@ -38,7 +39,7 @@ export const authenticateJWT = (
     req.authToken = token;
     next();
   } else {
-    return res.status(401).json({
+    return res.status(StatusCode.BadRequest).json({
       message: "No token provided",
     });
   }
