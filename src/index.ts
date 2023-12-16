@@ -1,10 +1,20 @@
-import "module-alias/register";
+import moduleAlias from "module-alias";
+import path from "path";
 
 import express, { Request, Response } from "express";
 import { Server } from "http";
 
 import cors from "cors";
 import dotenv from "dotenv";
+
+// Add aliases - Should be before other imports
+// Gives less problems than working with a package.json when switching between environments
+moduleAlias.addAliases({
+  helpers: path.join(__dirname, "helpers"),
+  middleware: path.join(__dirname, "middleware"),
+  routes: path.join(__dirname, "routes"),
+  schemas: path.join(__dirname, "schemas"),
+});
 
 import { connectDB } from "helpers/db";
 import router from "./router";
@@ -36,5 +46,3 @@ try {
 } catch (err) {
   console.log(err);
 }
-
-// TODO: Deploy

@@ -1,6 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { z } from "zod";
 
+import { isNumericString } from "helpers/regex";
 import { ZodValidation } from "middleware/validate";
 
 export const createSchema: ZodValidation = z.object({
@@ -31,6 +32,28 @@ export const findAllSchema: ZodValidation = z.object({
     authorization: z.string({
       required_error: "Auth token is required",
     }),
+  }),
+  query: z.object({
+    page: z
+      .string()
+      .regex(isNumericString, {
+        message: "Invalid page value - should be numeric",
+      })
+      .transform(Number)
+      .refine((v) => v > 0, {
+        message: "Invalid page value - should be greater than 0",
+      })
+      .optional(),
+    limit: z
+      .string()
+      .regex(isNumericString, {
+        message: "Invalid page value - should be numeric",
+      })
+      .transform(Number)
+      .refine((v) => v > 0, {
+        message: "Invalid page value - should be greater than 0",
+      })
+      .optional(),
   }),
 });
 

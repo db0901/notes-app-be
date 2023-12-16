@@ -51,8 +51,28 @@ describe("Get Notes", () => {
       .set("Authorization", `Bearer ${authToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("notes");
+    expect(res.body.data).toHaveProperty("notes");
+    expect(res.body).toHaveProperty("limit");
+    expect(res.body).toHaveProperty("page");
+    expect(res.body).toHaveProperty("totalPages");
   });
+
+  it("if page and / or limit are negative, should return 400 Bad Request", async () => {
+    const res = await request(app)
+      .get(`${mainRoute}?page=-1&limit=-1`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(res.status).toBe(400);
+  });
+
+  it("if page is greater than total pages, should return 400 Bad Request", async () => {
+    const res = await request(app)
+      .get(`${mainRoute}?page=100&limit=10`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(res.status).toBe(400);
+  });
+
   it("should return a single note", async () => {
     const res = await request(app)
       .get(`${mainRoute}/${noteId}`)
@@ -72,7 +92,13 @@ describe("Get Notes", () => {
 
     expect(res.status).toBe(404);
   });
-  // TODO: Add tests for pagination
+  it("should return 400 if pagination values are incorrect", async () => {
+    const res = await request(app)
+      .get(`${mainRoute}?page=0&limit=abc`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(res.status).toBe(400);
+  });
 });
 
 describe("Update Note", () => {

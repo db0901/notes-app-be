@@ -44,6 +44,12 @@ export const findAll = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
+  const queryParams: { page?: string; limit?: string } = req.query;
+
+  const page = parseInt(queryParams.page || "1");
+  const limit = parseInt(queryParams.limit || "10");
+  const skipIndex = (page - 1) * limit;
+
   const userId = req.userId;
 
   const user = await User.findById(userId);
@@ -53,23 +59,39 @@ export const findAll = async (
       message: "Does not exist a user with that ID",
     });
 
-  const notes = await Note.find({
-    userId: user._id,
-  });
+  const [notes, total] = await Promise.all([
+    await Note.find({ userId: user._id }).limit(limit).skip(skipIndex),
+    Note.countDocuments({ userId: user._id }),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  if (page > totalPages)
+    return res.status(StatusCode.BadRequest).json({
+      message: "Page not found - page should be between 1 and " + totalPages,
+    });
 
   if (!notes || notes.length === 0)
     return res.status(StatusCode.OK).json({
-      notes: [],
+      data: { notes: [] },
+      limit,
+      page,
+      totalPages,
     });
 
   return res.status(StatusCode.OK).json({
-    notes: notes.map((note) => ({
-      noteId: note._id,
-      title: note.title,
-      content: note.content,
-      createdAt: note.createdAt,
-      updatedAt: note.updatedAt,
-    })),
+    data: {
+      notes: notes.map((note) => ({
+        noteId: note._id,
+        title: note.title,
+        content: note.content,
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt,
+      })),
+    },
+    limit,
+    page,
+    totalPages,
   });
 };
 

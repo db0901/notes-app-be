@@ -1,6 +1,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  testPathIgnorePatterns: ["<rootDir>/dist/", "<rootDir>/node_modules/"],
   moduleNameMapper: {
     "^helpers/(.*)$": "<rootDir>/src/helpers/$1",
     "^middleware/(.*)$": "<rootDir>/src/middleware/$1",
