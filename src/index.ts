@@ -6,6 +6,9 @@ import { Server } from "http";
 
 import cors from "cors";
 import dotenv from "dotenv";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import swaggerDoc from "./docs/swagger.json";
 
 // Add aliases - Should be before other imports
 // Gives less problems than working with a package.json when switching between environments
@@ -27,6 +30,8 @@ export let server: Server;
 app.use(cors());
 app.use(express.json());
 
+const swaggerSpec = swaggerJSDoc({ swaggerDoc, apis: ["./routes/*.{js,ts}"] });
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use("", router);
 app.all("*", (req: Request, res: Response) => {
   res.status(404).json({

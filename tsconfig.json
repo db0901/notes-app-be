@@ -14,7 +14,8 @@
       "routes/*": ["routes/*"],
       "schemas/*": ["schemas/*"]
     },
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types"],
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"]
