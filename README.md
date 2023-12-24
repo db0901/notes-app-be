@@ -10,6 +10,7 @@ This is a traditional notes app built with express.js, typescript and MongoDB.
 - Server and rest api built with [express.js](https://expressjs.com/)
 - Database powered by [MongoDB](https://www.mongodb.com/)
 - E2E testing using [Jest](https://jestjs.io/) and [Supertest](https://github.com/ladjs/supertest)
+- Documentation `/docs` powered by [Swagger](https://swagger.io/)
 
 ## Modules
 
