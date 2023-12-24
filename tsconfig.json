@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./src",
     "paths": {
+      "docs/*": ["docs/*"],
       "helpers/*": ["helpers/*"],
       "middleware/*": ["middleware/*"],
       "routes/*": ["routes/*"],
